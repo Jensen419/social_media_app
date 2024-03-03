@@ -3,11 +3,14 @@ import 'package:social_media_app/components/textfield.dart';
 
 import '../components/my_button.dart';
 
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final void Function()? onTap;
+  RegisterPage({super.key, required this.onTap});
+
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  LoginPage({super.key, required this.onTap});
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +33,17 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height:20),
 
               MyTextField(
-                hintText: "Email",
+                hintText: "Username",
+                obscureText: false,
+                controller: usernameController,
+              ),
+
+              const SizedBox(height:25),
+              MyTextField(
+                hintText: "email",
                 obscureText: false,
                 controller: emailController
               ),
-
               const SizedBox(height:25),
 
               MyTextField(
@@ -43,6 +52,12 @@ class LoginPage extends StatelessWidget {
                 controller: passwordController
               ),
 
+              const SizedBox(height:25),
+              MyTextField(
+                hintText: "Confirm password",
+                obscureText: true,
+                controller: confirmPasswordController
+              ),
               const SizedBox(height:10),
 
               Row(
@@ -58,23 +73,22 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height:10),
               MyButton(
                 onTap: (){},
-                text: "L O G I N"
+                text: "R E G I S T E R"
               ),
               const SizedBox(height:10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?"),
+                  const Text("Already have an account?"),
                   GestureDetector(
                     onTap: onTap,
                     child: const Text(
-                      " Register here.",
+                      " Login here",
                       style: TextStyle(fontWeight: FontWeight.bold)
                     )
                   )
                 ]
               )
-
             ]
           ),
         )
