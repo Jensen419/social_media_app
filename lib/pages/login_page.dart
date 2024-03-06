@@ -1,13 +1,42 @@
-import 'package:flutter/material.dart';
-import 'package:social_media_app/components/textfield.dart';
-
 import '../components/my_button.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:social_media_app/components/textfield.dart';
+import 'package:social_media_app/custom_methods/display_error_message.dart';
 
-class LoginPage extends StatelessWidget {
+
+class LoginPage extends StatefulWidget {
   final void Function()? onTap;
+
+  const LoginPage({super.key, required this.onTap});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  LoginPage({super.key, required this.onTap});
+
+  void login() async{
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      displayErrorMessage(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +78,10 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+                      displayErrorMessage("A password reset link has been sent.", context);
+                    },
                     child: const Text("Forgot password?")
                   )
                 ]
@@ -57,7 +89,7 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height:10),
               MyButton(
-                onTap: (){},
+                onTap: login,
                 text: "L O G I N"
               ),
               const SizedBox(height:10),
@@ -66,7 +98,7 @@ class LoginPage extends StatelessWidget {
                 children: [
                   const Text("Don't have an account?"),
                   GestureDetector(
-                    onTap: onTap,
+                    onTap: widget.onTap,
                     child: const Text(
                       " Register here.",
                       style: TextStyle(fontWeight: FontWeight.bold)
@@ -74,7 +106,6 @@ class LoginPage extends StatelessWidget {
                   )
                 ]
               )
-
             ]
           ),
         )

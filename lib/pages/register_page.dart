@@ -1,16 +1,47 @@
+import '../components/my_button.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../custom_methods/display_error_message.dart';
 import 'package:social_media_app/components/textfield.dart';
 
-import '../components/my_button.dart';
-
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
-  RegisterPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+
+  void registerUser() async{
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    if (passwordController.text != confirmPasswordController.text) {
+      Navigator.pop(context);
+      displayErrorMessage(
+        "Ensure that passwords are the same.",
+        context
+      );
+    }else{
+      try {
+        UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+      }on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
+        displayErrorMessage(
+          e.code, context);
+        }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +103,7 @@ class RegisterPage extends StatelessWidget {
 
               const SizedBox(height:10),
               MyButton(
-                onTap: (){},
+                onTap: registerUser,
                 text: "R E G I S T E R"
               ),
               const SizedBox(height:10),
@@ -81,7 +112,7 @@ class RegisterPage extends StatelessWidget {
                 children: [
                   const Text("Already have an account?"),
                   GestureDetector(
-                    onTap: onTap,
+                    onTap: widget.onTap,
                     child: const Text(
                       " Login here",
                       style: TextStyle(fontWeight: FontWeight.bold)
