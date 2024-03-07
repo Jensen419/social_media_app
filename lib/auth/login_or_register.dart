@@ -22,7 +22,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
     if (goToLoginPage) {
       return LoginPage(onTap: togglePages);
     } else {
-      return RegisterPage(onTap: togglePages);    
+      return RegisterPage(onTap: togglePages);
     }
   }
 }
