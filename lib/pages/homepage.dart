@@ -1,3 +1,4 @@
+import '../components/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,7 +18,8 @@ class Homepage extends StatelessWidget {
         actions: [
           IconButton(onPressed: logout, icon: const Icon(Icons.logout))
         ],
-      )
+      ),
+      drawer: const MyDrawer()
     );
   }
 }
